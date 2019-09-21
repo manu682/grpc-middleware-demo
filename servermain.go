@@ -9,7 +9,8 @@ import (
 	"google.golang.org/grpc"
 
 	pb "grpc-middleware-demo/demoservice"
-	// "github.com/grpc-ecosystem/go-grpc-middleware"
+	intercepters "grpc-middleware-demo/intercepters"
+	//"github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 var (
@@ -29,9 +30,9 @@ func (s *demoServiceServer) GetData(ctx context.Context, input *pb.Input) (*pb.O
 func main() {
 	flag.Parse()
 	fmt.Println("In... server...")
-	myServer := grpc.NewServer(
-	//grpc.UnaryInterceptor(intercepters.ValidateAccountIntercepter())
-	)
+	myServer := grpc.NewServer(grpc.UnaryInterceptor(intercepters.ValidateAccountIntercepter))
+
+	//, intercepters.ValidateRegexIntercepter
 	pb.RegisterDemoServiceServer(myServer, &demoServiceServer{})
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
